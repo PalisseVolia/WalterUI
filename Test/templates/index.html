@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layout Selector</title>
+    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="stylesheet" href="../static/components/Mapping/MappingStyles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="button-container">
+            <h1 class="dashboard-title">Walter Dashboard</h1>
+            <div class="button-group">
+                <button class="layout-button active" data-layout="1">1</button>
+                <button class="layout-button" data-layout="2">2</button>
+                <button class="layout-button" data-layout="3">3</button>
+                <button class="layout-button" data-layout="4">4</button>
+            </div>
+        </div>
+        <div class="layout-container layout-1" id="layoutContainer">
+            <div class="content-area">
+                <p>Content Area 1</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Context menu and corresponding elements -->
+    <div class="context-menu" id="contentMenu">
+        <div class="menu-item" data-content="text">Text Content</div>
+        <div class="menu-item" data-content="image">Image</div>
+        <div class="menu-item" data-content="chart">Chart</div>
+        <div class="menu-item" data-content="widget">Widget</div>
+        <div class="menu-item" data-content="Mapping">Mapping</div>
+    </div>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="../static/scripts.js"></script>
+    <script src="../static/components/Mapping/MappingScripts.js"></script>
+</body>
+</html>
