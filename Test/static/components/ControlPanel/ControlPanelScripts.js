@@ -17,10 +17,10 @@ class ControlPanel {
         var scaleFactor = 1;
         break;
       case 2:
-        var scaleFactor = 1.65;
+        var scaleFactor = 1.5;
         break;
       case 3:
-        var scaleFactor = 2.1;
+        var scaleFactor = 1.9;
         break;
       case 4:
         var scaleFactor = 2.3;
