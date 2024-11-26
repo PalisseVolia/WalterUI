@@ -290,9 +290,9 @@ class ControlPanel {
     // Store update interval
     this.updateInterval = setInterval(() => {
       const forward =
-        this.pressedKeys.has("ArrowUp") || this.pressedKeys.has("w");
+        this.pressedKeys.has("ArrowUp") || this.pressedKeys.has("z");
       const left =
-        this.pressedKeys.has("ArrowLeft") || this.pressedKeys.has("a");
+        this.pressedKeys.has("ArrowLeft") || this.pressedKeys.has("q");
       const right =
         this.pressedKeys.has("ArrowRight") || this.pressedKeys.has("d");
       const backward =

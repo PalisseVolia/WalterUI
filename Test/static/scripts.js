@@ -24,11 +24,20 @@ function showContentMenu(e, contentArea) {
 /* Layout Management */
 /* ============================================= */
 
+function destroyComponents() {
+    document.querySelectorAll('.content-area').forEach(area => {
+        if (area._component && typeof area._component.destroy === 'function') {
+            area._component.destroy();
+        }
+    });
+}
+
 function initializeContentArea(contentArea) {
     contentArea.addEventListener('click', (e) => showContentMenu(e, contentArea));
 }
 
 function createLayout(numDivs) {
+    destroyComponents();
     layoutContainer.innerHTML = '';
     layoutContainer.className = 'layout-container';
     layoutContainer.classList.add(`layout-${numDivs}`);
