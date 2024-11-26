@@ -40,6 +40,13 @@ function createLayout(numDivs) {
         initializeContentArea(div);
         layoutContainer.appendChild(div);
     }
+    
+    // Update scaling for any existing control panels
+    document.querySelectorAll('.content-area').forEach(area => {
+        if (area._component instanceof ControlPanel) {
+            area._component.updateControlScaling();
+        }
+    });
 }
 
 // Initialize existing content areas when page loads
@@ -56,6 +63,11 @@ document.addEventListener('DOMContentLoaded', () => {
 document.querySelectorAll('.menu-item').forEach(item => {
     item.addEventListener('click', () => {
         if (activeContentArea) {
+            // Clean up previous content if it has a destroy method
+            if (activeContentArea._component && typeof activeContentArea._component.destroy === 'function') {
+                activeContentArea._component.destroy();
+            }
+            
             const contentType = item.dataset.content;
             if (contentType === 'Mapping') {
                 // Clear content area and create mapping div
@@ -66,6 +78,7 @@ document.querySelectorAll('.menu-item').forEach(item => {
                 
                 // Create mapping instance
                 const mapping = new Mapping(mapDiv);
+                activeContentArea._component = mapping;
                 
                 // Add button for adding points TODO: Remove when adding points is implemented
                 const addButton = document.createElement('button');
@@ -76,7 +89,15 @@ document.querySelectorAll('.menu-item').forEach(item => {
                 addButton.style.zIndex = '1000';
                 addButton.onclick = () => mapping.addPoint();
                 activeContentArea.appendChild(addButton);
+            } else if (contentType === 'ControlPanel') {
+                // Clear content area and initialize control panel
+                activeContentArea.innerHTML = '';
+                const controlPanel = new ControlPanel(activeContentArea);
+                activeContentArea._component = controlPanel;
             } else {
+                if (activeContentArea._component) {
+                    delete activeContentArea._component;
+                }
                 activeContentArea.innerHTML = `<p>${contentType} Content</p>`;
             }
             contentMenu.style.display = 'none';

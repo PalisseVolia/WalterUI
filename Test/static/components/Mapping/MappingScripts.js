@@ -80,6 +80,27 @@ class Mapping {
     draw() {
         this.updateMap();
     }
+
+    cleanup() {
+        // Remove all SVG elements
+        if (this.svg) {
+            this.svg.selectAll('*').remove();
+            this.svg.remove();
+        }
+        
+        // Clear data and references
+        this.data = [];
+        this.svg = null;
+        this.x = null;
+        this.y = null;
+        
+        // Clear container
+        this.container.innerHTML = '';
+    }
+
+    destroy() {
+        this.cleanup();
+    }
 }
 
 // Export for use in other files
