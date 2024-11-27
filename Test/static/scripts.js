@@ -50,11 +50,13 @@ function createLayout(numDivs) {
         layoutContainer.appendChild(div);
     }
     
-    // Update scaling for any existing control panels and instructions
+    // Update scaling for any existing control panels, instructions, and speed monitors TODO: sans doute possible de faire plus malin
     document.querySelectorAll('.content-area').forEach(area => {
         if (area._component instanceof ControlPanel) {
             area._component.updateControlScaling();
         } else if (area._component instanceof Instructions) {
+            area._component.updateScaling();
+        } else if (area._component instanceof SpeedMonitor) {
             area._component.updateScaling();
         }
     });
@@ -108,6 +110,10 @@ document.querySelectorAll('.menu-item').forEach(item => {
                 activeContentArea.innerHTML = '';
                 const instructions = new Instructions(activeContentArea);
                 activeContentArea._component = instructions;
+            } else if (contentType === 'SpeedMonitor') {
+                activeContentArea.innerHTML = '';
+                const speedMonitor = new SpeedMonitor(activeContentArea);
+                activeContentArea._component = speedMonitor;
             } else {
                 if (activeContentArea._component) {
                     delete activeContentArea._component;
