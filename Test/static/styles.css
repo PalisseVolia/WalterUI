@@ -74,27 +74,32 @@ body {
     height: calc(100% - 60px);
     gap: 20px;
     padding: 20px;
+    overflow: hidden;
 }
 
 /* Layout styles */
 .layout-1 {
     display: block;
+    overflow: hidden;
 }
 
 .layout-2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    overflow: hidden;
 }
 
 .layout-3 {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+    overflow: hidden;
 }
 
 .layout-4 {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
+    overflow: hidden;
 }
 
 /* ============================================= */

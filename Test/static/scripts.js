@@ -50,10 +50,12 @@ function createLayout(numDivs) {
         layoutContainer.appendChild(div);
     }
     
-    // Update scaling for any existing control panels
+    // Update scaling for any existing control panels and instructions
     document.querySelectorAll('.content-area').forEach(area => {
         if (area._component instanceof ControlPanel) {
             area._component.updateControlScaling();
+        } else if (area._component instanceof Instructions) {
+            area._component.updateScaling();
         }
     });
 }
@@ -99,10 +101,13 @@ document.querySelectorAll('.menu-item').forEach(item => {
                 addButton.onclick = () => mapping.addPoint();
                 activeContentArea.appendChild(addButton);
             } else if (contentType === 'ControlPanel') {
-                // Clear content area and initialize control panel
                 activeContentArea.innerHTML = '';
                 const controlPanel = new ControlPanel(activeContentArea);
                 activeContentArea._component = controlPanel;
+            } else if (contentType === 'Instructions') {
+                activeContentArea.innerHTML = '';
+                const instructions = new Instructions(activeContentArea);
+                activeContentArea._component = instructions;
             } else {
                 if (activeContentArea._component) {
                     delete activeContentArea._component;

@@ -11,7 +11,7 @@ class ControlPanel {
   }
 
   updateControlScaling() {
-    const count = document.querySelectorAll('.content-area').length;
+    const count = document.querySelectorAll(".content-area").length;
     switch (count) {
       case 1:
         var scaleFactor = 1;
@@ -27,12 +27,24 @@ class ControlPanel {
       default:
         break;
     }
-    
+
     // Update CSS variables
-    document.documentElement.style.setProperty('--control-size', `min(${15/scaleFactor}vh, ${15/scaleFactor}vw)`);
-    document.documentElement.style.setProperty('--control-gap', `${1/scaleFactor}vh`);
-    document.documentElement.style.setProperty('--control-margin', `min(${3/scaleFactor}vh, ${3/scaleFactor}vw)`);
-    document.documentElement.style.setProperty('--control-font-size', `min(${5/scaleFactor}vh, ${5/scaleFactor}vw)`);
+    document.documentElement.style.setProperty(
+      "--control-size",
+      `min(${15 / scaleFactor}vh, ${15 / scaleFactor}vw)`
+    );
+    document.documentElement.style.setProperty(
+      "--control-gap",
+      `${1 / scaleFactor}vh`
+    );
+    document.documentElement.style.setProperty(
+      "--control-margin",
+      `min(${3 / scaleFactor}vh, ${3 / scaleFactor}vw)`
+    );
+    document.documentElement.style.setProperty(
+      "--control-font-size",
+      `min(${5 / scaleFactor}vh, ${5 / scaleFactor}vw)`
+    );
   }
 
   cleanup() {
