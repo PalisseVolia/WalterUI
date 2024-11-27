@@ -12,11 +12,15 @@ class Mapping {
     }
 
     initializeSVG() {
+        const minDimension = Math.min(this.container.clientWidth, this.container.clientHeight);
+        this.width = minDimension;
+        this.height = minDimension;
+        
         this.svg = d3.select(this.container)
             .append('svg')
             .attr('width', '100%')
             .attr('height', '100%')
-            .attr('viewBox', `0 0 ${this.width + 2 * this.padding} ${this.height + 2 * this.padding}`)
+            .attr('viewBox', `0 0 ${this.width + this.padding} ${this.height + this.padding}`)
             .attr('preserveAspectRatio', 'xMidYMid meet');
     }
 
