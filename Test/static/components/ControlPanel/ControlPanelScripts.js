@@ -6,11 +6,11 @@ class ControlPanel {
     this.updateInterval = null;
     this.pressedKeys = new Set();
     this.buttonCleanupFunctions = [];
-    this.updateControlScaling();
+    this.updateScaling();
     this.init();
   }
 
-  updateControlScaling() {
+  updateScaling() {
     const count = document.querySelectorAll(".content-area").length;
     switch (count) {
       case 1:

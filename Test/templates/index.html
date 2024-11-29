@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Layout Selector</title>
+    <title>Walter Dashboard</title>
+    <!-- Import CSS stylesheets for the dashboard and its components -->
     <link rel="stylesheet" href="../static/styles.css">
     <link rel="stylesheet" href="../static/components/Mapping/MappingStyles.css">
     <link rel="stylesheet" href="../static/components/ControlPanel/ControlPanelStyles.css">
@@ -12,8 +13,10 @@
 </head>
 <body>
     <div class="container">
+        <!-- Main container for dashboard components -->
         <div class="button-container">
             <h1 class="dashboard-title">Walter Dashboard</h1>
+            <!-- Layout selection buttons numbered 1-4 -->
             <div class="button-group">
                 <button class="layout-button active" data-layout="1">1</button>
                 <button class="layout-button" data-layout="2">2</button>
@@ -21,14 +24,16 @@
                 <button class="layout-button" data-layout="4">4</button>
             </div>
         </div>
+
+        <!-- Container for the main layout that changes based on selected layout -->
         <div class="layout-container layout-1" id="layoutContainer">
             <div class="content-area">
-                <p>Content Area 1</p>
+                <p>Add component</p>
             </div>
         </div>
     </div>
     
-    <!-- Context menu and corresponding elements -->
+    <!-- Context menu with different view options to choose which component to add in the layout -->
     <div class="context-menu" id="contentMenu">
         <div class="menu-item" data-content="Mapping">Mapping</div>
         <div class="menu-item" data-content="ControlPanel">Control Panel</div>
@@ -36,8 +41,12 @@
         <div class="menu-item" data-content="SpeedMonitor">Speed Monitor</div>
     </div>
 
+    <!-- Include D3.js library for data visualization -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- Import general website scripts -->
     <script src="../static/scripts.js"></script>
+    <script src="../static/rosLaunch.js"></script>
+    <!-- Import scripts for each component -->
     <script src="../static/components/Mapping/MappingScripts.js"></script>
     <script src="../static/components/ControlPanel/ControlPanelScripts.js"></script>
     <script src="../static/components/Instructions/InstructionsScripts.js"></script>

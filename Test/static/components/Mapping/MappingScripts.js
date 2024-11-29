@@ -1,6 +1,6 @@
 class Mapping {
     constructor(container) {
-        this.data = [{ x: 0, y: 0 }];
+        this.data = [];
         this.container = container;
         this.width = container.clientWidth;
         this.height = container.clientHeight;
@@ -9,6 +9,8 @@ class Mapping {
         this.initializeSVG();
         this.initializeScales();
         this.draw();
+        this.updatePoseData();
+        this.updateInterval = setInterval(() => this.updatePoseData(), 100); // 10 times per second
     }
 
     initializeSVG() {
@@ -25,25 +27,55 @@ class Mapping {
     }
 
     initializeScales() {
+        const maxVal = Math.max(
+            d3.max(this.data, d => d.x),
+            d3.max(this.data, d => d.y)
+        );
+        const minVal = Math.min(
+            d3.min(this.data, d => d.x),
+            d3.min(this.data, d => d.y)
+        );
+
         this.x = d3.scaleLinear()
             .range([this.padding, this.width - this.padding])
-            .domain(d3.extent(this.data, d => d.x));
+            .domain([minVal, maxVal]);
 
         this.y = d3.scaleLinear()
             .range([this.height - this.padding, this.padding])
-            .domain(d3.extent(this.data, d => d.y));
+            .domain([minVal, maxVal]);
     }
 
-    addPoint() {
-        const x = Math.floor(Math.random() * 100);
-        const y = Math.floor(Math.random() * 100);
+    updatePoseData() {
+        fetch('/pose')
+            .then(response => response.json())
+            .then(data => {
+                if (data.position) {
+                    this.addPoint(data.position.x, data.position.y);
+                }
+            })
+            .catch(error => console.error('Error fetching pose data:', error));
+    }
+
+    addPoint(x, y) {
+        if (typeof x === 'undefined' || typeof y === 'undefined') {return;}
         this.data.push({ x, y });
         this.updateMap();
     }
 
     updateMap() {
-        this.x.domain(d3.extent(this.data, d => d.x));
-        this.y.domain(d3.extent(this.data, d => d.y));
+        // Find the maximum absolute value among all x and y coordinates
+        const maxVal = Math.max(
+            d3.max(this.data, d => d.x),
+            d3.max(this.data, d => d.y)
+        );
+        const minVal = Math.min(
+            d3.min(this.data, d => d.x),
+            d3.min(this.data, d => d.y)
+        );
+
+        // Update scales with symmetric domains
+        this.x.domain([minVal, maxVal]);
+        this.y.domain([minVal, maxVal]);
 
         // Update dots
         const dots = this.svg.selectAll('.dot')
@@ -86,19 +118,25 @@ class Mapping {
     }
 
     cleanup() {
-        // Remove all SVG elements
+        clearInterval(this.updateInterval);
+        // Kill ROS scripts first
+        fetch('/kill_mapping_scripts', {
+            method: 'POST',
+        })
+        .then(response => response.json())
+        .catch(error => console.error('Error killing ROS scripts:', error));
+
+        // Original cleanup code
         if (this.svg) {
             this.svg.selectAll('*').remove();
             this.svg.remove();
         }
         
-        // Clear data and references
         this.data = [];
         this.svg = null;
         this.x = null;
         this.y = null;
         
-        // Clear container
         this.container.innerHTML = '';
     }
 
