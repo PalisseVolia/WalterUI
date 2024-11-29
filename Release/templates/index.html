@@ -1,77 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>ROS2 Teleop Interface</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layout Selector</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='components/Mapping/MappingStyles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='components/ControlPanel/ControlPanelStyles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='components/Instructions/InstructionStyles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='components/SpeedMonitor/SpeedMonitorStyles.css') }}">
 </head>
 <body>
-    <h1>ROS2 Teleop Interface</h1>
-
-    <div id="toggles">
-        <button class="toggle" id="toggle-monitor" onclick="toggleMonitor()">Show Monitor</button>
-        <button class="toggle" id="toggle-instructions" onclick="toggleInstructions()">Show Instructions</button>
-    </div>
-
     <div class="container">
-        <div class="control-panel">
-            <h2>Control Panel</h2>
-            <div class="controls">
-                <div class="empty"></div>
-                <button class="control-btn" id="forward" title="Forward">↑</button>
-                <div class="empty"></div>
-                <button class="control-btn" id="left" title="Rotate Left">←</button>
-                <button class="control-btn" id="stop" title="Stop">⬤</button>
-                <button class="control-btn" id="right" title="Rotate Right">→</button>
-                <div class="empty"></div>
-                <button class="control-btn" id="backward" title="Backward">↓</button>
-                <div class="empty"></div>
-            </div>
-
-            <div class="instructions">
-                <h3>Keyboard Controls:</h3>
-                <p><span class="key-binding">↑</span> or <span class="key-binding">w</span>: Forward</p>
-                <p><span class="key-binding">←</span> or <span class="key-binding">a</span>: Rotate Left</p>
-                <p><span class="key-binding">→</span> or <span class="key-binding">d</span>: Rotate Right</p>
-                <p><span class="key-binding">↓</span> or <span class="key-binding">s</span>: Backward</p>
-                <p><span class="key-binding">space</span>: Stop</p>
+        <div class="button-container">
+            <h1 class="dashboard-title">Walter Dashboard</h1>
+            <div class="button-group">
+                <button class="layout-button active" data-layout="1">1</button>
+                <button class="layout-button" data-layout="2">2</button>
+                <button class="layout-button" data-layout="3">3</button>
+                <button class="layout-button" data-layout="4">4</button>
             </div>
         </div>
-
-        <div class="monitor-panel">
-            <div class="velocity-box">
-                <h2>Linear Velocity</h2>
-                <div class="value-row">
-                    <span class="value-label">X:</span>
-                    <span class="value" id="linear-x">0.000</span>
-                </div>
-                <div class="value-row">
-                    <span class="value-label">Y:</span>
-                    <span class="value" id="linear-y">0.000</span>
-                </div>
-                <div class="value-row">
-                    <span class="value-label">Z:</span>
-                    <span class="value" id="linear-z">0.000</span>
-                </div>
-            </div>
-
-            <div class="velocity-box">
-                <h2>Angular Velocity</h2>
-                <div class="value-row">
-                    <span class="value-label">X:</span>
-                    <span class="value" id="angular-x">0.000</span>
-                </div>
-                <div class="value-row">
-                    <span class="value-label">Y:</span>
-                    <span class="value" id="angular-y">0.000</span>
-                </div>
-                <div class="value-row">
-                    <span class="value-label">Z:</span>
-                    <span class="value" id="angular-z">0.000</span>
-                </div>
+        <div class="layout-container layout-1" id="layoutContainer">
+            <div class="content-area">
+                <p>Content Area 1</p>
             </div>
         </div>
     </div>
+    
+    <!-- Context menu and corresponding elements -->
+    <div class="context-menu" id="contentMenu">
+        <div class="menu-item" data-content="Mapping">Mapping</div>
+        <div class="menu-item" data-content="ControlPanel">Control Panel</div>
+        <div class="menu-item" data-content="Instructions">Instructions</div>
+        <div class="menu-item" data-content="SpeedMonitor">Speed Monitor</div>
+    </div>
 
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+    <script src="{{ url_for('static', filename='components/Mapping/MappingScripts.js') }}"></script>
+    <script src="{{ url_for('static', filename='components/ControlPanel/ControlPanelScripts.js') }}"></script>
+    <script src="{{ url_for('static', filename='components/Instructions/InstructionsScripts.js') }}"></script>
+    <script src="{{ url_for('static', filename='components/SpeedMonitor/SpeedMonitorScripts.js') }}"></script>
+    <script src="{{ url_for('static', filename='rosLaunch.js') }}"></script>
 </body>
 </html>

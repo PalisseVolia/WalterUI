@@ -1,0 +1,32 @@
+.instructions {
+    padding: var(--instructions-padding, min(10vh, 10vw));
+    font-family: Arial, sans-serif;
+    max-width: var(--instructions-width, min(80vh, 80vw));
+    margin: 0 auto;
+}
+
+.instructions h3 {
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: var(--instructions-title-size, min(4vh, 4vw));
+}
+
+.instructions p {
+    margin: var(--instructions-spacing, min(1vh, 1vw)) 0;
+    display: flex;
+    align-items: center;
+    gap: var(--instructions-gap, min(1vh, 1vw));
+    font-size: var(--instructions-text-size, min(2.5vh, 2.5vw));
+}
+
+.key-binding {
+    background-color: #f0f0f0;
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-family: monospace;
+    min-width: 30px;
+    text-align: center;
+    display: inline-block;
+}
