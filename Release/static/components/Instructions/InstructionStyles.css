@@ -1,3 +1,7 @@
+/* ============================================= */
+/* Instructions Container */
+/* ============================================= */
+
 .instructions {
     padding: var(--instructions-padding, min(10vh, 10vw));
     font-family: Arial, sans-serif;
@@ -19,6 +23,10 @@
     gap: var(--instructions-gap, min(1vh, 1vw));
     font-size: var(--instructions-text-size, min(2.5vh, 2.5vw));
 }
+
+/* ============================================= */
+/* Key Binding Styling */
+/* ============================================= */
 
 .key-binding {
     background-color: #f0f0f0;

@@ -1,3 +1,7 @@
+/* ============================================= */
+/* Monitor Panel Styling */
+/* ============================================= */
+
 .monitor-panel {
     display: flex;
     flex-direction: column;
@@ -6,6 +10,10 @@
     background-color: #f8f9fa;
     flex: 1;
 }
+
+/* ============================================= */
+/* Velocity Box Styling */
+/* ============================================= */
 
 .velocity-box {
     display: flex;
@@ -22,6 +30,10 @@
     padding-bottom: 5px;
     font-size: var(--monitor-font-size-h2, min(5vh, 5vw));
 }
+
+/* ============================================= */
+/* Value Row Styling */
+/* ============================================= */
 
 .value-row {
     display: flex;

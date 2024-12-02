@@ -1,4 +1,8 @@
+/* ============================================= */
+/* Methods realted to ROS2 */
+/* ============================================= */
 
+// Launch a ROS2 command using the realted API endpoint
 function launchROS2Command(command) {
     fetch('/launch_ros_command', {
         method: 'POST',

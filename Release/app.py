@@ -7,6 +7,10 @@ import threading
 import json
 import subprocess
 
+# =============================================
+# Variables and Constants
+# =============================================
+
 app = Flask(__name__)
 
 # Global variable to store latest twist message 
@@ -15,7 +19,7 @@ latest_cmd_vel = {
     'angular': {'x': 0.0, 'y': 0.0, 'z': 0.0}
 }
 
-# Update global pose variable to include covariance
+# Update global pose variable with covariance
 latest_pose = {
     'pose': {
         'position': {'x': 0.0, 'y': 0.0, 'z': 0.0},
@@ -24,16 +28,21 @@ latest_pose = {
     'covariance': [0.0] * 36
 }
 
-# Constants for velocity (same as turtlebot3_teleop)
+# Constants for velocity
 LINEAR_VEL_STEP_SIZE = 0.01
 ANGULAR_VEL_STEP_SIZE = 0.1
 MAX_LINEAR_VEL = 0.22
 MAX_ANGULAR_VEL = 2.84
 
+# =============================================
+# ROS2 Node class implementation
+# =============================================
+
 class ROSNode(Node):
     def __init__(self):
         super().__init__('web_interface_node')
-        # Publisher for cmd_vel
+
+        # Publisher to publish cmd_vel
         self.publisher = self.create_publisher(Twist, '/cmd_vel', 10)
         # Subscriber to monitor cmd_vel
         self.subscription = self.create_subscription(
@@ -42,13 +51,14 @@ class ROSNode(Node):
             self.cmd_vel_callback,
             10)
         
-        # Update pose subscriber
+        # Subscriber to monitor pose
         self.pose_subscription = self.create_subscription(
             PoseWithCovariance,
             '/pose_odom',  # Updated topic name
             self.pose_callback,
             10)
         
+    # Callback function to update latest_cmd_vel
     def cmd_vel_callback(self, msg):
         global latest_cmd_vel
         latest_cmd_vel = {
@@ -64,6 +74,7 @@ class ROSNode(Node):
             }
         }
     
+    # Callback function to update latest_pose
     def pose_callback(self, msg):
         global latest_pose
         latest_pose = {
@@ -71,22 +82,9 @@ class ROSNode(Node):
                 'x': msg.pose.position.x,
                 'y': msg.pose.position.y
             }
-            # 'pose': {
-            #     'position': {
-            #         'x': msg.pose.position.x,
-            #         'y': msg.pose.position.y,
-            #         'z': msg.pose.position.z
-            #     },
-            #     'orientation': {
-            #         'x': msg.pose.orientation.x,
-            #         'y': msg.pose.orientation.y,
-            #         'z': msg.pose.orientation.z,
-            #         'w': msg.pose.orientation.w
-            #     }
-            # },
-            # 'covariance': list(msg.covariance)
         }
     
+    # Function to publish velocity
     def publish_velocity(self, linear_x, angular_z):
         msg = Twist()
         # Ensure we don't exceed max velocities
@@ -94,9 +92,11 @@ class ROSNode(Node):
         msg.angular.z = max(min(angular_z, MAX_ANGULAR_VEL), -MAX_ANGULAR_VEL)
         self.publisher.publish(msg)
 
+# =============================================
 # Initialize ROS2 node
-ros_node = None
+# =============================================
 
+ros_node = None
 def init_ros():
     global ros_node
     rclpy.init()
@@ -109,14 +109,17 @@ def init_ros():
     thread = threading.Thread(target=spin_ros, daemon=True)
     thread.start()
 
-# Initialize ROS2
 init_ros()
+
+# =============================================
+# Flask routes API implementation
+# =============================================
 
 @app.route('/')
 def home():
     return render_template('index.html')
 
-@app.route('/twist')
+@app.route('/get_cmd_vel')
 def get_twist():
     return jsonify(latest_cmd_vel)
 
@@ -124,7 +127,7 @@ def get_twist():
 def get_pose():
     return jsonify(latest_pose)
 
-@app.route('/cmd_vel', methods=['POST'])
+@app.route('/set_cmd_vel', methods=['POST'])
 def send_cmd_vel():
     data = request.get_json()
     linear_x = float(data.get('linear_x', 0.0))
@@ -154,5 +157,9 @@ def kill_mapping_scripts():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)})
 
+# =============================================
+# Main function to run the Flask app
+# =============================================
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=1880)
