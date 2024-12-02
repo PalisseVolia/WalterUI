@@ -91,12 +91,12 @@ document.querySelectorAll('.menu-item').forEach(item => {
             const contentType = item.dataset.content;
             if (contentType === 'Mapping') {
                 // Create a mapping div
+                activeContentArea.innerHTML = '';
                 const mapDiv = document.createElement('div');
                 mapDiv.className = 'mapping';
                 activeContentArea.appendChild(mapDiv);
                 
                 // Clear content area and Create a mapping instance
-                activeContentArea.innerHTML = '';
                 const mapping = new Mapping(mapDiv);
                 activeContentArea._component = mapping;
                 

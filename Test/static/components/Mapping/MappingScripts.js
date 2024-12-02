@@ -1,3 +1,7 @@
+/* ============================================= */
+/* Mapping Class Definition */
+/* ============================================= */
+
 class Mapping {
     constructor(container) {
         this.data = [];
@@ -12,6 +16,10 @@ class Mapping {
         this.updatePoseData();
         this.updateInterval = setInterval(() => this.updatePoseData(), 100); // 10 times per second
     }
+
+    /* ============================================= */
+    /* SVG and Scales Initialization */
+    /* ============================================= */
 
     initializeSVG() {
         const minDimension = Math.min(this.container.clientWidth, this.container.clientHeight);
@@ -45,6 +53,10 @@ class Mapping {
             .domain([minVal, maxVal]);
     }
 
+    /* ============================================= */
+    /* Data Update Functions */
+    /* ============================================= */
+
     updatePoseData() {
         fetch('/pose')
             .then(response => response.json())
@@ -61,6 +73,10 @@ class Mapping {
         this.data.push({ x, y });
         this.updateMap();
     }
+
+    /* ============================================= */
+    /* Map Rendering Functions */
+    /* ============================================= */
 
     updateMap() {
         // Find the maximum absolute value among all x and y coordinates
@@ -117,16 +133,19 @@ class Mapping {
         this.updateMap();
     }
 
+    /* ============================================= */
+    /* Cleanup Functions */
+    /* ============================================= */
+
     cleanup() {
         clearInterval(this.updateInterval);
-        // Kill ROS scripts first
+        // Kill ROS scripts
         fetch('/kill_mapping_scripts', {
             method: 'POST',
         })
         .then(response => response.json())
         .catch(error => console.error('Error killing ROS scripts:', error));
 
-        // Original cleanup code
         if (this.svg) {
             this.svg.selectAll('*').remove();
             this.svg.remove();
@@ -145,5 +164,4 @@ class Mapping {
     }
 }
 
-// Export for use in other files
 window.Mapping = Mapping;

@@ -1,3 +1,7 @@
+/* ============================================= */
+/* ControlPanel Class Definition */
+/* ============================================= */
+
 class ControlPanel {
   constructor(container) {
     this.container = container;
@@ -10,69 +14,9 @@ class ControlPanel {
     this.init();
   }
 
-  updateScaling() {
-    const count = document.querySelectorAll(".content-area").length;
-    switch (count) {
-      case 1:
-        var scaleFactor = 1;
-        break;
-      case 2:
-        var scaleFactor = 1.5;
-        break;
-      case 3:
-        var scaleFactor = 1.9;
-        break;
-      case 4:
-        var scaleFactor = 2.3;
-      default:
-        break;
-    }
-
-    // Update CSS variables
-    document.documentElement.style.setProperty(
-      "--control-size",
-      `min(${15 / scaleFactor}vh, ${15 / scaleFactor}vw)`
-    );
-    document.documentElement.style.setProperty(
-      "--control-gap",
-      `${1 / scaleFactor}vh`
-    );
-    document.documentElement.style.setProperty(
-      "--control-margin",
-      `min(${3 / scaleFactor}vh, ${3 / scaleFactor}vw)`
-    );
-    document.documentElement.style.setProperty(
-      "--control-font-size",
-      `min(${5 / scaleFactor}vh, ${5 / scaleFactor}vw)`
-    );
-  }
-
-  cleanup() {
-    // Remove keyboard event listeners
-    if (this.keyDownHandler) {
-      document.removeEventListener("keydown", this.keyDownHandler);
-    }
-    if (this.keyUpHandler) {
-      document.removeEventListener("keyup", this.keyUpHandler);
-    }
-
-    // Clear update interval
-    if (this.updateInterval) {
-      clearInterval(this.updateInterval);
-    }
-
-    // Clean up button event listeners
-    this.buttonCleanupFunctions.forEach((cleanup) => cleanup());
-    this.buttonCleanupFunctions = [];
-
-    // Clear any remaining state
-    this.pressedKeys.clear();
-    this.container.innerHTML = "";
-  }
-
-  destroy() {
-    this.cleanup();
-  }
+  /* ============================================= */
+  /* Component Initialization and Controls */
+  /* ============================================= */
 
   init() {
     // Constants
@@ -101,8 +45,13 @@ class ControlPanel {
     let pressedKeys = new Set();
     let touchStartTime = 0;
 
+    /* ============================================= */
+    /* Velocity Control Functions */
+    /* ============================================= */
+
+    // Send velocity command to server
     function sendVelocity(linearX, angularZ) {
-      fetch("/cmd_vel", {
+      fetch("/set_cmd_vel", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -114,6 +63,7 @@ class ControlPanel {
       });
     }
 
+    // Update velocity based on pressed keys
     function updateVelocity(forward, left, right, backward) {
       let targetLinear = 0;
       let targetAngular = 0;
@@ -141,7 +91,11 @@ class ControlPanel {
       sendVelocity(currentLinearVel, currentAngularVel);
     }
 
-    // Button controls with enhanced touch support
+    /* ============================================= */
+    /* Button Control Setup */
+    /* ============================================= */
+
+    // Button controls
     document.querySelectorAll(".control-btn").forEach((btn) => {
       let isPressed = false;
       let pressInterval = null;
@@ -151,7 +105,7 @@ class ControlPanel {
           handlePress();
           pressInterval = setInterval(() => {
             handlePress();
-          }, 50); // Update at 20Hz to match the main update loop
+          }, 50); // 20Hz update rate
         }
       }
 
@@ -264,7 +218,11 @@ class ControlPanel {
       });
     });
 
-    // Keyboard controls remain the same
+    /* ============================================= */
+    /* Keyboard Control Setup */
+    /* ============================================= */
+
+    // Set up key map
     const keyMap = {
       ArrowUp: "forward",
       ArrowLeft: "left",
@@ -299,6 +257,10 @@ class ControlPanel {
     document.addEventListener("keydown", this.keyDownHandler);
     document.addEventListener("keyup", this.keyUpHandler);
 
+    /* ============================================= */
+    /* Velocity Update Loop */
+    /* ============================================= */
+
     // Store update interval
     this.updateInterval = setInterval(() => {
       const forward =
@@ -312,5 +274,81 @@ class ControlPanel {
 
       updateVelocity(forward, left, right, backward);
     }, 50); // 20Hz update rate
+  }
+
+  
+  /* ============================================= */
+  /* Layout Scaling */
+  /* ============================================= */
+
+  updateScaling() {
+    const count = document.querySelectorAll(".content-area").length;
+    let scaleFactor;
+
+    // Set scale factor based on number of content areas
+    switch (count) {
+      case 1:
+        scaleFactor = 1;
+        break;
+      case 2:
+        scaleFactor = 1.5;
+        break;
+      case 3:
+        scaleFactor = 1.9;
+        break;
+      case 4:
+        scaleFactor = 2.3;
+      default:
+        break;
+    }
+
+    // Update CSS variables
+    document.documentElement.style.setProperty(
+      "--control-size",
+      `min(${15 / scaleFactor}vh, ${15 / scaleFactor}vw)`
+    );
+    document.documentElement.style.setProperty(
+      "--control-gap",
+      `${1 / scaleFactor}vh`
+    );
+    document.documentElement.style.setProperty(
+      "--control-margin",
+      `min(${3 / scaleFactor}vh, ${3 / scaleFactor}vw)`
+    );
+    document.documentElement.style.setProperty(
+      "--control-font-size",
+      `min(${5 / scaleFactor}vh, ${5 / scaleFactor}vw)`
+    );
+  }
+
+  /* ============================================= */
+  /* Cleanup Functions */
+  /* ============================================= */
+
+  cleanup() {
+    // Remove keyboard event listeners
+    if (this.keyDownHandler) {
+      document.removeEventListener("keydown", this.keyDownHandler);
+    }
+    if (this.keyUpHandler) {
+      document.removeEventListener("keyup", this.keyUpHandler);
+    }
+
+    // Clear update interval
+    if (this.updateInterval) {
+      clearInterval(this.updateInterval);
+    }
+
+    // Clean up button event listeners
+    this.buttonCleanupFunctions.forEach((cleanup) => cleanup());
+    this.buttonCleanupFunctions = [];
+
+    // Clear any remaining state
+    this.pressedKeys.clear();
+    this.container.innerHTML = "";
+  }
+
+  destroy() {
+    this.cleanup();
   }
 }
