@@ -70,6 +70,14 @@ class Mapping {
 
     addPoint(x, y) {
         if (typeof x === 'undefined' || typeof y === 'undefined') {return;}
+        if (x == 0.0 && y == 0.0) {return;}
+        const lastPoint = this.data[this.data.length - 1];
+        if (lastPoint) {
+            const distance = Math.sqrt(Math.pow(x - lastPoint.x, 2) + Math.pow(y - lastPoint.y, 2));
+            if (distance < 0.01) {
+            return;
+            }
+        }
         this.data.push({ x, y });
         this.updateMap();
     }
@@ -79,23 +87,26 @@ class Mapping {
     /* ============================================= */
 
     updateMap() {
+        // Skip the first point for scales and lines
+        const dataToUse = this.data.slice(1);
+
         // Find the maximum absolute value among all x and y coordinates
         const maxVal = Math.max(
-            d3.max(this.data, d => d.x),
-            d3.max(this.data, d => d.y)
+            d3.max(dataToUse, d => d.x),
+            d3.max(dataToUse, d => d.y)
         );
         const minVal = Math.min(
-            d3.min(this.data, d => d.x),
-            d3.min(this.data, d => d.y)
+            d3.min(dataToUse, d => d.x),
+            d3.min(dataToUse, d => d.y)
         );
 
         // Update scales with symmetric domains
         this.x.domain([minVal, maxVal]);
         this.y.domain([minVal, maxVal]);
 
-        // Update dots
+        // Update dots, skipping the first point
         const dots = this.svg.selectAll('.dot')
-            .data(this.data);
+            .data(dataToUse);
 
         dots.enter().append('circle')
             .attr('class', 'dot')
@@ -107,10 +118,10 @@ class Mapping {
 
         dots.exit().remove();
 
-        // Update lines
-        const lines = this.data.slice(0, -1).map((d, i) => ({
-            x: [d.x, this.data[i + 1].x],
-            y: [d.y, this.data[i + 1].y]
+        // Update lines, skipping the first point
+        const lines = dataToUse.slice(0, -1).map((d, i) => ({
+            x: [d.x, dataToUse[i + 1].x],
+            y: [d.y, dataToUse[i + 1].y]
         }));
 
         const lineSelection = this.svg.selectAll('.line')

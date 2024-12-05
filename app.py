@@ -54,7 +54,7 @@ class ROSNode(Node):
         # Subscriber to monitor pose
         self.pose_subscription = self.create_subscription(
             PoseWithCovariance,
-            '/pose_odom',  # Updated topic name
+            '/pose_odom',
             self.pose_callback,
             10)
         
