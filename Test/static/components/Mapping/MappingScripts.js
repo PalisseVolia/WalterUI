@@ -65,7 +65,6 @@ class Mapping {
                     this.addPoint(data.position.x, data.position.y);
                 }
             })
-            .catch(error => console.error('Error fetching pose data:', error));
     }
 
     addPoint(x, y) {
@@ -114,7 +113,7 @@ class Mapping {
             .merge(dots)
             .attr('cx', d => this.x(d.x) + this.padding / 2)
             .attr('cy', d => this.y(d.y) + this.padding / 2)
-            .style('fill', 'steelblue');
+            .style('fill', 'rgb(0, 153, 255)');
 
         dots.exit().remove();
 
@@ -134,7 +133,7 @@ class Mapping {
             .attr('y1', d => this.y(d.y[0]) + this.padding / 2)
             .attr('x2', d => this.x(d.x[1]) + this.padding / 2)
             .attr('y2', d => this.y(d.y[1]) + this.padding / 2)
-            .style('stroke', 'steelblue')
+            .style('stroke', 'rgb(0, 153, 255)')
             .style('stroke-width', 2);
 
         lineSelection.exit().remove();

@@ -2,7 +2,7 @@
 from flask import Flask, render_template, jsonify, request
 import rclpy
 from rclpy.node import Node
-from geometry_msgs.msg import Twist, PoseWithCovariance  # Updated import
+from geometry_msgs.msg import Twist, PoseWithCovariance
 import threading
 import json
 import subprocess

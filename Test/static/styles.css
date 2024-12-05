@@ -12,7 +12,7 @@ body {
     font-family: Arial, sans-serif;
     height: 100vh;
     padding: 20px;
-    background-color: #f0f0f0;
+    background-color: #1a1a1a;
 }
 
 /* ============================================= */
@@ -22,10 +22,10 @@ body {
 .container {
     margin: 0 auto;
     height: 100%;
-    background-color: white;
+    background-color: #2d2d2d;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* ============================================= */
@@ -46,24 +46,24 @@ body {
 
 .dashboard-title {
     font-size: 1.5rem;
-    color: #333;
+    color: #e0e0e0;
     margin: 0;
 }
 
 /* Button styles */
 .layout-button {
     padding: 8px 16px;
-    border: 2px solid #007bff;
-    background-color: white;
-    color: #007bff;
+    border: 2px solid #0099ff;
+    background-color: #2d2d2d;
+    color: #0099ff;
     border-radius: 4px;
     cursor: pointer;
     min-width: 50px;
 }
 
 .layout-button.active {
-    background-color: #007bff;
-    color: white;
+    background-color: #0099ff;
+    color: #2d2d2d;
 }
 
 /* ============================================= */
@@ -108,10 +108,10 @@ body {
 
 /* Layout elements */
 .content-area {
-    border: 2px dashed #ccc;
+    border: 2px dashed #666;
     border-radius: 8px;
     padding: 20px;
-    background-color: #f8f9fa;
+    background-color: #383838;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -122,15 +122,15 @@ body {
 }
 
 .content-area p {
-    color: #666;
+    color: #b0b0b0;
     font-size: 1.1em;
 }
 
 /* Context Menu */
 .context-menu {
     position: fixed;
-    background: white;
-    border: 1px solid #ccc;
+    background: #2d2d2d;
+    border: 1px solid #666;
     border-radius: 4px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     padding: 5px 0;
@@ -143,8 +143,9 @@ body {
     padding: 8px 15px;
     cursor: pointer;
     transition: background-color 0.2s;
+    color: #b0b0b0;
 }
 
 .menu-item:hover {
-    background-color: #f0f0f0;
+    background-color: #383838;
 }

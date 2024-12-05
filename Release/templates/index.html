@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Walter Dashboard</title>
     <!-- Import CSS stylesheets for the dashboard and its components -->
-    <link rel="stylesheet" href="../static/styles.css">
-    <link rel="stylesheet" href="../static/components/Mapping/MappingStyles.css">
-    <link rel="stylesheet" href="../static/components/ControlPanel/ControlPanelStyles.css">
-    <link rel="stylesheet" href="../static/components/Instructions/InstructionStyles.css">
-    <link rel="stylesheet" href="../static/components/SpeedMonitor/SpeedMonitorStyles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='components/Mapping/MappingStyles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='components/ControlPanel/ControlPanelStyles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='components/Instructions/InstructionStyles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='components/SpeedMonitor/SpeedMonitorStyles.css') }}">
 </head>
 <body>
     <div class="container">
@@ -44,12 +44,12 @@
     <!-- Include D3.js library for data visualization -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <!-- Import general website scripts -->
-    <script src="../static/scripts.js"></script>
-    <script src="../static/rosLaunch.js"></script>
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+    <script src="{{ url_for('static', filename='rosLaunch.js') }}"></script>
     <!-- Import scripts for each component -->
-    <script src="../static/components/Mapping/MappingScripts.js"></script>
-    <script src="../static/components/ControlPanel/ControlPanelScripts.js"></script>
-    <script src="../static/components/Instructions/InstructionsScripts.js"></script>
-    <script src="../static/components/SpeedMonitor/SpeedMonitorScripts.js"></script>
+    <script src="{{ url_for('static', filename='components/Mapping/MappingScripts.js') }}"></script>
+    <script src="{{ url_for('static', filename='components/ControlPanel/ControlPanelScripts.js') }}"></script>
+    <script src="{{ url_for('static', filename='components/Instructions/InstructionsScripts.js') }}"></script>
+    <script src="{{ url_for('static', filename='components/SpeedMonitor/SpeedMonitorScripts.js') }}"></script>
 </body>
 </html>

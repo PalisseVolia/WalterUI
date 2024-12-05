@@ -7,7 +7,7 @@
     flex-direction: column;
     gap: var(--monitor-gap, min(1vh, 1vw));
     border-radius: 8px;
-    background-color: #f8f9fa;
+    background-color: #383838;
     flex: 1;
 }
 
@@ -20,13 +20,13 @@
     flex-direction: column;
     gap: var(--monitor-gap, 1vh);
     padding: var(--monitor-padding, min(2vh, 2vw));
-    background-color: #f8f9fa;
+    background-color: #383838;
 }
 
 .velocity-box h2 {
     margin-top: 0;
-    color: #333;
-    border-bottom: 2px solid #007bff;
+    color: #e0e0e0;
+    border-bottom: 2px solid #0099ff;
     padding-bottom: 5px;
     font-size: var(--monitor-font-size-h2, min(5vh, 5vw));
 }
@@ -39,18 +39,18 @@
     display: flex;
     justify-content: space-between;
     padding: 5px;
-    background-color: white;
+    background-color: #2d2d2d;
     border-radius: 3px;
 }
 
 .value-label {
     font-weight: bold;
     font-size: var(--monitor-font-size, min(2.5vh, 2.5vw));
-    color: #555;
+    color: #b0b0b0;
 }
 
 .value {
     font-family: monospace;
     font-size: var(--monitor-font-size, min(2.5vh, 2.5vw));
-    color: #007bff;
+    color: #0099ff;
 }

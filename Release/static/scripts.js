@@ -6,6 +6,7 @@ const layoutContainer = document.getElementById('layoutContainer');
 const buttons = document.querySelectorAll('.layout-button');
 const contentMenu = document.getElementById('contentMenu');
 let activeContentArea = null;
+let activeComponents = [];
 
 /* ============================================= */
 /* Context Menu Functions */
@@ -28,12 +29,12 @@ function showContentMenu(e, contentArea) {
 // Destroys all components in a layout (in all content areas) if they have a destroy() method
 // Ensures that components are properly cleaned up when switching layouts
 function destroyComponents() {
-    document.querySelectorAll('.content-area').forEach(area => {
-        // Check if area has a component and if it has a destroy method
-        if (area._component && typeof area._component.destroy === 'function') {
-            area._component.destroy();
+    activeComponents.forEach(component => {
+        if (component && typeof component.destroy === 'function') {
+            component.destroy();
         }
     });
+    activeComponents = [];
 }
 
 // Initializes a content area with a click event listener to show the content menu
@@ -99,6 +100,7 @@ document.querySelectorAll('.menu-item').forEach(item => {
                 // Clear content area and Create a mapping instance
                 const mapping = new Mapping(mapDiv);
                 activeContentArea._component = mapping;
+                activeComponents.push(mapping);
                 
                 // Launch relevant ROS2 scripts
                 launchROS2Command('ros2 launch walter_robot odometry_launch.py');
@@ -106,14 +108,17 @@ document.querySelectorAll('.menu-item').forEach(item => {
                 activeContentArea.innerHTML = '';
                 const controlPanel = new ControlPanel(activeContentArea);
                 activeContentArea._component = controlPanel;
+                activeComponents.push(controlPanel);
             } else if (contentType === 'Instructions') {
                 activeContentArea.innerHTML = '';
                 const instructions = new Instructions(activeContentArea);
                 activeContentArea._component = instructions;
+                activeComponents.push(instructions);
             } else if (contentType === 'SpeedMonitor') {
                 activeContentArea.innerHTML = '';
                 const speedMonitor = new SpeedMonitor(activeContentArea);
                 activeContentArea._component = speedMonitor;
+                activeComponents.push(speedMonitor);
             /* ADD: Add more content types here */
             } else {
                 if (activeContentArea._component) {
@@ -142,3 +147,6 @@ buttons.forEach(button => {
         createLayout(numDivs);
     });
 });
+
+// Destroy components on window/tab close
+window.addEventListener('beforeunload', destroyComponents);
