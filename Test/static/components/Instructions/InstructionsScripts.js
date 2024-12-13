@@ -37,13 +37,13 @@ class Instructions {
 		// set scale factor based on number of content areas
 		switch (count) {
 			case 1:
-				scaleFactor = 1;
+				scaleFactor = 0.8;
 				break;
 			case 2:
-				scaleFactor = 1.25;
+				scaleFactor = 1;
 				break;
 			case 3:
-				scaleFactor = 1.4;
+				scaleFactor = 1.1;
 				break;
 			case 4:
 				scaleFactor = 1.7;

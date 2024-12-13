@@ -61,7 +61,7 @@ function createLayout(numDivs) {
     }
     
     // Update scaling for any components by calling their respective updateScaling() methods
-    const componentsToUpdate = [ControlPanel, Instructions, SpeedMonitor /*ADD: Add more components here*/];
+    const componentsToUpdate = [ControlPanel, Instructions, SpeedMonitor, PositionMonitor, CurrentMonitor /*ADD: Add more components here*/];
     document.querySelectorAll('.content-area').forEach(area => {
         if (area._component && componentsToUpdate.some(comp => area._component instanceof comp)) {
             area._component.updateScaling();
@@ -87,6 +87,9 @@ document.querySelectorAll('.menu-item').forEach(item => {
             if (activeContentArea._component && typeof activeContentArea._component.destroy === 'function') {
                 activeContentArea._component.destroy();
             }
+
+            // Remove previous component from activeComponents
+            activeComponents = activeComponents.filter(component => component !== activeContentArea._component);
             
             // Depending on the clicked content type, create a new component in the content area
             const contentType = item.dataset.content;
@@ -102,8 +105,10 @@ document.querySelectorAll('.menu-item').forEach(item => {
                 activeContentArea._component = mapping;
                 activeComponents.push(mapping);
                 
-                // Launch relevant ROS2 scripts
-                launchROS2Command('ros2 launch walter_robot odometry_launch.py');
+                // Launch relevant ROS2 scripts, if not already running
+                if (!activeComponents.some(component => component instanceof PositionMonitor)) {
+                    launchROS2Command('ros2 launch walter_robot odometry_launch.py');
+                }
             } else if (contentType === 'ControlPanel') {
                 activeContentArea.innerHTML = '';
                 const controlPanel = new ControlPanel(activeContentArea);
@@ -119,6 +124,21 @@ document.querySelectorAll('.menu-item').forEach(item => {
                 const speedMonitor = new SpeedMonitor(activeContentArea);
                 activeContentArea._component = speedMonitor;
                 activeComponents.push(speedMonitor);
+            } else if (contentType === 'PositionMonitor') {
+                activeContentArea.innerHTML = '';
+                const positionMonitor = new PositionMonitor(activeContentArea);
+                activeContentArea._component = positionMonitor;
+                activeComponents.push(positionMonitor);
+
+                // Launch relevant ROS2 scripts, if not already running
+                if (!activeComponents.some(component => component instanceof Mapping)) {
+                    launchROS2Command('ros2 launch walter_robot odometry_launch.py');
+                }
+            } else if (contentType === 'CurrentMonitor') {
+                activeContentArea.innerHTML = '';
+                const currentMonitor = new CurrentMonitor(activeContentArea);
+                activeContentArea._component = currentMonitor;
+                activeComponents.push(currentMonitor);
             /* ADD: Add more content types here */
             } else {
                 if (activeContentArea._component) {

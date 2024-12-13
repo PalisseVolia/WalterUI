@@ -1,0 +1,76 @@
+/* ============================================= */
+/* Monitor Panel Container */
+/* ============================================= */
+
+.monitor-panel {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: left;
+    padding: var(--monitor-padding, 2vh);
+    gap: var(--monitor-gap, 1vh);
+    background-color: #2d2d2d;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* ============================================= */
+/* Header Styling */
+/* ============================================= */
+
+.monitor-panel h2 {
+    margin: 0;
+    padding-bottom: var(--monitor-gap, 1vh);
+    font-size: var(--monitor-font-size-h2, 5vh);
+    color: #e0e0e0;
+    text-align: left;
+    border-bottom: 2px solid #0099ff;
+}
+
+/* ============================================= */
+/* Value Row Elements */
+/* ============================================= */
+
+.value-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: right;
+    padding: var(--monitor-padding, 2vh) 0;
+    font-size: var(--monitor-font-size, 2.5vh);
+    background-color: #2d2d2d;
+    border-radius: 3px;
+    padding: 5px;
+}
+
+.value-label {
+    font-weight: bold;
+    color: #b0b0b0;
+}
+
+.value {
+    color: #0099ff;
+    font-family: monospace;
+}
+
+/* ============================================= */
+/* Error Message */
+/* ============================================= */
+
+.error-message {
+    position: absolute;
+    width: 80%;
+    bottom: 5%;
+    margin: var(--monitor-padding, 2vh) 0;
+    padding: var(--monitor-padding, 2vh);
+    background-color: #ff3333;
+    border-radius: 4px;
+    display: none;
+    text-align: center;
+}
+
+.error-message .value-label {
+    color: #ffffff;
+    font-size: var(--monitor-font-size, 2.5vh);
+}

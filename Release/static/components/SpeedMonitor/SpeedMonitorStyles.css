@@ -20,7 +20,7 @@
     flex-direction: column;
     gap: var(--monitor-gap, 1vh);
     padding: var(--monitor-padding, min(2vh, 2vw));
-    background-color: #383838;
+    background-color: #2d2d2d;
 }
 
 .velocity-box h2 {
@@ -39,7 +39,7 @@
     display: flex;
     justify-content: space-between;
     padding: 5px;
-    background-color: #2d2d2d;
+    background-color: #383838;
     border-radius: 3px;
 }
 

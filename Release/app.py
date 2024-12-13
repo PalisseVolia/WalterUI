@@ -3,6 +3,7 @@ from flask import Flask, render_template, jsonify, request
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist, PoseWithCovariance
+from std_msgs.msg import Float32
 import threading
 import json
 import subprocess
@@ -18,6 +19,9 @@ latest_cmd_vel = {
     'linear': {'x': 0.0, 'y': 0.0, 'z': 0.0},
     'angular': {'x': 0.0, 'y': 0.0, 'z': 0.0}
 }
+
+# Global variable for current value
+latest_current = 0.0
 
 # Update global pose variable with covariance
 latest_pose = {
@@ -58,6 +62,13 @@ class ROSNode(Node):
             self.pose_callback,
             10)
         
+        # Subscriber to monitor current
+        self.current_subscription = self.create_subscription(
+            Float32,
+            '/current',
+            self.current_callback,
+            10)
+        
     # Callback function to update latest_cmd_vel
     def cmd_vel_callback(self, msg):
         global latest_cmd_vel
@@ -83,6 +94,11 @@ class ROSNode(Node):
                 'y': msg.pose.position.y
             }
         }
+    
+    # Callback function to update latest_current
+    def current_callback(self, msg):
+        global latest_current
+        latest_current = msg.data
     
     # Function to publish velocity
     def publish_velocity(self, linear_x, angular_z):
@@ -123,9 +139,13 @@ def home():
 def get_twist():
     return jsonify(latest_cmd_vel)
 
-@app.route('/pose')
+@app.route('/get_pose')
 def get_pose():
     return jsonify(latest_pose)
+
+@app.route('/get_current')
+def get_current():
+    return jsonify({"current": latest_current})
 
 @app.route('/set_cmd_vel', methods=['POST'])
 def send_cmd_vel():
@@ -154,6 +174,18 @@ def kill_mapping_scripts():
         subprocess.run(['pkill', '-f', 'rpm_processor.py'])
         subprocess.run(['pkill', '-f', 'odometry.py'])
         return jsonify({"status": "success"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)})
+
+@app.route('/check_processes')
+def check_processes():
+    try:
+        rpm_running = subprocess.run(['pgrep', '-f', 'rpm_processor.py'], capture_output=True).returncode == 0
+        odom_running = subprocess.run(['pgrep', '-f', 'odometry.py'], capture_output=True).returncode == 0
+        return jsonify({
+            "rpm_processor": rpm_running,
+            "odometry": odom_running
+        })
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)})
 

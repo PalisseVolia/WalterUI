@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='components/ControlPanel/ControlPanelStyles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='components/Instructions/InstructionStyles.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='components/SpeedMonitor/SpeedMonitorStyles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='components/PositionMonitor/PositionMonitorStyles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='components/CurrentMonitor/CurrentMonitorStyles.css') }}">
 </head>
 <body>
     <div class="container">
@@ -39,6 +41,8 @@
         <div class="menu-item" data-content="ControlPanel">Control Panel</div>
         <div class="menu-item" data-content="Instructions">Instructions</div>
         <div class="menu-item" data-content="SpeedMonitor">Speed Monitor</div>
+        <div class="menu-item" data-content="PositionMonitor">Position Monitor</div>
+        <div class="menu-item" data-content="CurrentMonitor">Current Monitor</div>
     </div>
 
     <!-- Include D3.js library for data visualization -->
@@ -51,5 +55,7 @@
     <script src="{{ url_for('static', filename='components/ControlPanel/ControlPanelScripts.js') }}"></script>
     <script src="{{ url_for('static', filename='components/Instructions/InstructionsScripts.js') }}"></script>
     <script src="{{ url_for('static', filename='components/SpeedMonitor/SpeedMonitorScripts.js') }}"></script>
+    <script src="{{ url_for('static', filename='components/PositionMonitor/PositionMonitorScripts.js') }}"></script>
+    <script src="{{ url_for('static', filename='components/CurrentMonitor/CurrentMonitorScripts.js') }}"></script>
 </body>
 </html>

@@ -10,6 +10,13 @@ class Mapping {
         this.height = container.clientHeight;
         this.padding = 20;
         
+        // Add error message div
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.id = 'mapping-error';
+        errorDiv.innerHTML = '<span class="value-label">ERROR: Failed to fetch mapping data</span>';
+        this.container.appendChild(errorDiv);
+        
         this.initializeSVG();
         this.initializeScales();
         this.draw();
@@ -58,13 +65,35 @@ class Mapping {
     /* ============================================= */
 
     updatePoseData() {
-        fetch('/pose')
+        // First check if processes are running
+        fetch('/check_processes')
             .then(response => response.json())
-            .then(data => {
-                if (data.position) {
-                    this.addPoint(data.position.x, data.position.y);
+            .then(processes => {
+                if (!processes.rpm_processor || !processes.odometry) {
+                    this.showError(true);
+                    return;
+                } else {
+                    this.showError(false);
+                    return fetch('/get_pose')
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.position) {
+                                this.addPoint(data.position.x, data.position.y);
+                            }
+                        });
                 }
             })
+            .catch(error => {
+                console.error('Error checking processes:', error);
+                this.showError(true);
+            });
+    }
+
+    showError(show) {
+        const errorElement = document.getElementById('mapping-error');
+        if (errorElement) {
+            errorElement.style.display = show ? 'block' : 'none';
+        }
     }
 
     addPoint(x, y) {
@@ -88,6 +117,8 @@ class Mapping {
     updateMap() {
         // Skip the first point for scales and lines
         const dataToUse = this.data.slice(1);
+        const regularPoints = dataToUse.slice(0, -1);
+        const lastPoint = dataToUse[dataToUse.length - 1];
 
         // Find the maximum absolute value among all x and y coordinates
         const maxVal = Math.max(
@@ -103,28 +134,14 @@ class Mapping {
         this.x.domain([minVal, maxVal]);
         this.y.domain([minVal, maxVal]);
 
-        // Update dots, skipping the first point
-        const dots = this.svg.selectAll('.dot')
-            .data(dataToUse);
-
-        dots.enter().append('circle')
-            .attr('class', 'dot')
-            .attr('r', 5)
-            .merge(dots)
-            .attr('cx', d => this.x(d.x) + this.padding / 2)
-            .attr('cy', d => this.y(d.y) + this.padding / 2)
-            .style('fill', 'rgb(0, 153, 255)');
-
-        dots.exit().remove();
-
-        // Update lines, skipping the first point
-        const lines = dataToUse.slice(0, -1).map((d, i) => ({
-            x: [d.x, dataToUse[i + 1].x],
-            y: [d.y, dataToUse[i + 1].y]
+        // Update regular lines
+        const regularLines = regularPoints.slice(0, -1).map((d, i) => ({
+            x: [d.x, regularPoints[i + 1].x],
+            y: [d.y, regularPoints[i + 1].y]
         }));
 
         const lineSelection = this.svg.selectAll('.line')
-            .data(lines);
+            .data(regularLines);
 
         lineSelection.enter().append('line')
             .attr('class', 'line')
@@ -137,6 +154,53 @@ class Mapping {
             .style('stroke-width', 2);
 
         lineSelection.exit().remove();
+
+        // Update last line
+        const lastLine = this.svg.selectAll('.last-line')
+            .data(lastPoint ? [{
+                x: [regularPoints[regularPoints.length - 1].x, lastPoint.x],
+                y: [regularPoints[regularPoints.length - 1].y, lastPoint.y]
+            }] : []);
+
+        lastLine.enter().append('line')
+            .attr('class', 'last-line')
+            .merge(lastLine)
+            .attr('x1', d => this.x(d.x[0]) + this.padding / 2)
+            .attr('y1', d => this.y(d.y[0]) + this.padding / 2)
+            .attr('x2', d => this.x(d.x[1]) + this.padding / 2)
+            .attr('y2', d => this.y(d.y[1]) + this.padding / 2)
+            .style('stroke', 'red')
+            .style('stroke-width', 2);
+
+        lastLine.exit().remove();
+
+        // THEN update regular dots
+        const dots = this.svg.selectAll('.dot')
+            .data(regularPoints);
+
+        dots.enter().append('circle')
+            .attr('class', 'dot')
+            .attr('r', 5)
+            .merge(dots)
+            .attr('cx', d => this.x(d.x) + this.padding / 2)
+            .attr('cy', d => this.y(d.y) + this.padding / 2)
+            .style('fill', 'rgb(0, 153, 255)');
+
+        dots.exit().remove();
+
+        // Update last point LAST with lighter red
+        const lastDot = this.svg.selectAll('.last-dot')
+            .data(lastPoint ? [lastPoint] : []);
+
+        lastDot.enter().append('circle')
+            .attr('class', 'last-dot')
+            .attr('r', 5)
+            .merge(lastDot)
+            .attr('cx', d => this.x(d.x) + this.padding / 2)
+            .attr('cy', d => this.y(d.y) + this.padding / 2)
+            .style('fill', 'red');
+
+        lastDot.exit().remove();
     }
 
     draw() {
@@ -166,7 +230,9 @@ class Mapping {
         this.x = null;
         this.y = null;
         
+        // Clear DOM content and references
         this.container.innerHTML = '';
+        this.showError(false);
     }
 
     destroy() {

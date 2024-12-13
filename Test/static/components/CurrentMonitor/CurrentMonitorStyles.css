@@ -1,0 +1,47 @@
+/* ============================================= */
+/* Monitor Panel Container */
+/* ============================================= */
+
+.current-monitor {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: left;
+    padding: var(--monitor-padding, 2vh);
+    gap: var(--monitor-gap, 1vh);
+    background-color: #2d2d2d;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.current-monitor h2 {
+    margin: 0;
+    padding-bottom: var(--monitor-gap, 1vh);
+    font-size: var(--monitor-font-size-h2, 5vh);
+    color: #e0e0e0;
+    text-align: left;
+    border-bottom: 2px solid #00ff95;
+}
+
+.current-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: right;
+    padding: var(--monitor-padding, 2vh) 0;
+    font-size: var(--monitor-font-size, 2.5vh);
+    background-color: #2d2d2d;
+    border-radius: 3px;
+    padding: 5px;
+}
+
+.current-label {
+    font-weight: bold;
+    color: #b0b0b0;
+}
+
+.current-value {
+    color: #00ff95;
+    font-family: monospace;
+}

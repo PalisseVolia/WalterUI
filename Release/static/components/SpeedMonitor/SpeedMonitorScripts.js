@@ -91,10 +91,10 @@ class SpeedMonitor {
 				scaleFactor = 1;
 				break;
 			case 2:
-				scaleFactor = 1.5;
+				scaleFactor = 1.1;
 				break;
 			case 3:
-				scaleFactor = 1.9;
+				scaleFactor = 1.4;
 				break;
 			case 4:
 				scaleFactor = 2.3;
