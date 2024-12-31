@@ -3,6 +3,8 @@ from flask import Flask, render_template, jsonify, request
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist, PoseWithCovariance
+from nav_msgs.msg import Odometry
+from std_msgs.msg import Float32
 import threading
 import json
 import subprocess
@@ -19,6 +21,9 @@ latest_cmd_vel = {
     'angular': {'x': 0.0, 'y': 0.0, 'z': 0.0}
 }
 
+# Global variable for current value
+latest_current = 0.0
+
 # Update global pose variable with covariance
 latest_pose = {
     'pose': {
@@ -26,6 +31,28 @@ latest_pose = {
         'orientation': {'x': 0.0, 'y': 0.0, 'z': 0.0, 'w': 0.0}
     },
     'covariance': [0.0] * 36
+}
+
+# Update global pose_fusion variable to match Odometry message structure
+latest_pose_fusion = {
+    'header': {
+        'frame_id': '',
+        'stamp': {'sec': 0, 'nanosec': 0}
+    },
+    'pose': {
+        'pose': {
+            'position': {'x': 0.0, 'y': 0.0, 'z': 0.0},
+            'orientation': {'x': 0.0, 'y': 0.0, 'z': 0.0, 'w': 0.0}
+        },
+        'covariance': [0.0] * 36
+    },
+    'twist': {
+        'twist': {
+            'linear': {'x': 0.0, 'y': 0.0, 'z': 0.0},
+            'angular': {'x': 0.0, 'y': 0.0, 'z': 0.0}
+        },
+        'covariance': [0.0] * 36
+    }
 }
 
 # Constants for velocity
@@ -58,6 +85,20 @@ class ROSNode(Node):
             self.pose_callback,
             10)
         
+        # Subscriber to monitor pose_fusion
+        self.pose_fusion_subscription = self.create_subscription(
+            Odometry,
+            '/odometry/filtered',
+            self.pose_fusion_callback,
+            10)
+        
+        # Subscriber to monitor current
+        self.current_subscription = self.create_subscription(
+            Float32,
+            '/current',
+            self.current_callback,
+            10)
+        
     # Callback function to update latest_cmd_vel
     def cmd_vel_callback(self, msg):
         global latest_cmd_vel
@@ -83,6 +124,21 @@ class ROSNode(Node):
                 'y': msg.pose.position.y
             }
         }
+
+    # Callback function to update latest_pose_fusion
+    def pose_fusion_callback(self, msg):
+        global latest_pose_fusion
+        latest_pose_fusion = {
+            'position': {
+                'x': msg.pose.pose.position.x,
+                'y': msg.pose.pose.position.y
+            }
+        }
+    
+    # Callback function to update latest_current
+    def current_callback(self, msg):
+        global latest_current
+        latest_current = msg.data
     
     # Function to publish velocity
     def publish_velocity(self, linear_x, angular_z):
@@ -123,9 +179,17 @@ def home():
 def get_twist():
     return jsonify(latest_cmd_vel)
 
-@app.route('/pose')
+@app.route('/get_pose')
 def get_pose():
     return jsonify(latest_pose)
+
+@app.route('/get_pose_fusion')
+def get_pose_fusion():
+    return jsonify(latest_pose_fusion)
+
+@app.route('/get_current')
+def get_current():
+    return jsonify({"current": latest_current})
 
 @app.route('/set_cmd_vel', methods=['POST'])
 def send_cmd_vel():
@@ -141,7 +205,7 @@ def launch_ros_command():
     command = data.get('command')
     try:
         # Source the ROS2 setup script and then run the command
-        full_command = f"source ~/ros2_ws/install/setup.bash && {command}"
+        full_command = f"source /opt/ros/humble/setup.bash && source ~/ros2_ws/install/setup.bash && {command}"
         subprocess.Popen(full_command, shell=True, executable='/bin/bash')
         return jsonify({"status": "success"})
     except Exception as e:
@@ -154,6 +218,46 @@ def kill_mapping_scripts():
         subprocess.run(['pkill', '-f', 'rpm_processor.py'])
         subprocess.run(['pkill', '-f', 'odometry.py'])
         return jsonify({"status": "success"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)})
+    
+@app.route('/kill_pos_scripts', methods=['POST'])
+def kill_pos_scripts():
+    try:
+        # Kill both scripts using pkill
+        subprocess.run(['pkill', '-f', 'rpm_processor.py'])
+        subprocess.run(['pkill', '-f', 'odometry.py'])
+        subprocess.run(['pkill', '-f', 'ekf_node'])
+        subprocess.run(['pkill', '-f', 'sensors_fusion_launch.py'])
+        subprocess.run(['pkill', '-f', 'rpm_processor'])
+        subprocess.run(['pkill', '-f', 'pose_odometry_estimation'])
+        return jsonify({"status": "success"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)})
+
+@app.route('/check_processes')
+def check_processes():
+    try:
+        rpm_running = subprocess.run(['pgrep', '-f', 'rpm_processor.py'], capture_output=True).returncode == 0
+        odom_running = subprocess.run(['pgrep', '-f', 'odometry.py'], capture_output=True).returncode == 0
+        return jsonify({
+            "rpm_processor": rpm_running,
+            "odometry": odom_running
+        })
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)})
+
+@app.route('/check_processes_pos')
+def check_processes_pos():
+    try:
+        rpm_running = subprocess.run(['pgrep', '-f', 'rpm_processor.py'], capture_output=True).returncode == 0
+        odom_running = subprocess.run(['pgrep', '-f', 'odometry.py'], capture_output=True).returncode == 0
+        fusion_running = subprocess.run(['pgrep', '-f', 'ekf_node'], capture_output=True).returncode == 0
+        return jsonify({
+            "rpm_processor": rpm_running,
+            "odometry": odom_running,
+            "fusion" : fusion_running
+        })
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)})
 

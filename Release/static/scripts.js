@@ -132,7 +132,7 @@ document.querySelectorAll('.menu-item').forEach(item => {
 
                 // Launch relevant ROS2 scripts, if not already running
                 if (!activeComponents.some(component => component instanceof Mapping)) {
-                    launchROS2Command('ros2 launch walter_robot odometry_launch.py');
+                    launchROS2Command('ros2 launch walter_robot sensors_fusion_launch.py');
                 }
             } else if (contentType === 'CurrentMonitor') {
                 activeContentArea.innerHTML = '';

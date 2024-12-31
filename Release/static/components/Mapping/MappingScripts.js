@@ -70,7 +70,7 @@ class Mapping {
             .then(response => response.json())
             .then(processes => {
                 if (!processes.rpm_processor || !processes.odometry) {
-                    this.showError(true);
+                    this.showError(false);
                     return;
                 } else {
                     this.showError(false);
@@ -84,8 +84,7 @@ class Mapping {
                 }
             })
             .catch(error => {
-                console.error('Error checking processes:', error);
-                this.showError(true);
+                return;
             });
     }
 

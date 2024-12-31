@@ -17,7 +17,7 @@ class CurrentMonitor {
             <div class="monitor-panel">
                 <h2>Current Draw</h2>
                 <div class="value-row">
-                    <span class="value-label">Amps:</span>
+                    <span class="value-label">Milli Amps:</span>
                     <span class="value" id="current-value">0.000</span>
                 </div>
             </div>

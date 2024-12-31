@@ -16,7 +16,7 @@ class PositionMonitor {
     render() {
         this.container.innerHTML = `
             <div class="monitor-panel">
-                <h2>Position</h2>
+                <h2>Position: odometry</h2>
                 <div class="value-row">
                     <span class="value-label">X:</span>
                     <span class="value" id="position-x">0.000</span>
@@ -24,6 +24,15 @@ class PositionMonitor {
                 <div class="value-row">
                     <span class="value-label">Y:</span>
                     <span class="value" id="position-y">0.000</span>
+                </div>
+                <h2>Position: fusion</h2>
+                <div class="value-row">
+                    <span class="value-label">X:</span>
+                    <span class="value" id="position-x-fusion">0.000</span>
+                </div>
+                <div class="value-row">
+                    <span class="value-label">Y:</span>
+                    <span class="value" id="position-y-fusion">0.000</span>
                 </div>
             </div>
             <div class="error-message" id="position-error">
@@ -50,13 +59,13 @@ class PositionMonitor {
     // Fetch pose data from the server and update the displayed values
     updatePosition() {
         // First check if processes are running
-        fetch('/check_processes', {
+        fetch('/check_processes_pos', {
             signal: this.abortController.signal
         })
             .then(response => response.json())
             .then(processes => {
                 if (!processes.rpm_processor || !processes.odometry) {
-                    this.showError(true);
+                    this.showError(false);
                     return;
                 } else {
                     this.showError(false);
@@ -73,7 +82,32 @@ class PositionMonitor {
                 }
             })
             .catch(error => {
-                console.error('Error checking processes', error);
+                return;
+            });
+        fetch('/check_processes_pos', {
+            signal: this.abortController.signal
+        })
+            .then(response => response.json())
+            .then(processes => {
+                if (!processes.rpm_processor || !processes.odometry) {
+                    this.showError(false);
+                    return;
+                } else {
+                    this.showError(false);
+                    return fetch('/get_pose_fusion', {
+                        signal: this.abortController.signal
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.position) {
+                                document.getElementById('position-x-fusion').textContent = data.position.x.toFixed(3);
+                                document.getElementById('position-y-fusion').textContent = data.position.y.toFixed(3);
+                            }
+                        });
+                }
+            })
+            .catch(error => {
+                return;
             });
     }
 
@@ -131,7 +165,7 @@ class PositionMonitor {
         this.showError(false);
 
         // Kill ROS scripts with proper error handling
-        fetch('/kill_mapping_scripts', {
+        fetch('/kill_pos_scripts', {
             method: 'POST',
         })
         .then(response => response.json())
