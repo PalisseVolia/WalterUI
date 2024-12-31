@@ -61,7 +61,7 @@ function createLayout(numDivs) {
     }
     
     // Update scaling for any components by calling their respective updateScaling() methods
-    const componentsToUpdate = [ControlPanel, Instructions, SpeedMonitor, PositionMonitor, CurrentMonitor /*ADD: Add more components here*/];
+    const componentsToUpdate = [ControlPanel, Instructions, SpeedMonitor, PositionMonitor, CurrentMonitor, Example /*ADD: Add more components here*/];
     document.querySelectorAll('.content-area').forEach(area => {
         if (area._component && componentsToUpdate.some(comp => area._component instanceof comp)) {
             area._component.updateScaling();
@@ -139,6 +139,11 @@ document.querySelectorAll('.menu-item').forEach(item => {
                 const currentMonitor = new CurrentMonitor(activeContentArea);
                 activeContentArea._component = currentMonitor;
                 activeComponents.push(currentMonitor);
+            } else if (contentType === 'Example') {
+                activeContentArea.innerHTML = '';
+                const example = new Example(activeContentArea);
+                activeContentArea._component = example;
+                activeComponents.push(example);
             /* ADD: Add more content types here */
             } else {
                 if (activeContentArea._component) {
